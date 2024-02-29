@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -14,7 +14,9 @@ function refreshPage() {
 }
 
 export default function TrafficLightSimulation() {
-  const peopleToWalk = 12;
+  const initPeopleToWalk = useMemo(() => getRandomInt(10, 20), []); // Initialize peopleToWalk with a random value that remains constant
+
+  const peopleToWalk = useMemo(() => initPeopleToWalk, []); // peopleToWalk does not change along all the execution
   const initGroupWalking = getRandomInt(2, 6);
 
   const [crossing, setCrossing] = useState({
@@ -64,9 +66,11 @@ export default function TrafficLightSimulation() {
     <>
       <div style={{ textAlign: "center" }}>
         <h1>Traffic Light Crossing Simulation</h1>
-        <p>Help pedestrians cross the street safely!</p>
-
-        {completed === 12 ? (
+        <h4>Help pedestrians cross the street safely!</h4>{" "}
+        <div className="chip">
+         {peopleToWalk} people want to cross the pedestrian/zebra crossing
+         </div><p></p>
+        {completed === peopleToWalk ? (
           <button
             onClick={refreshPage}
             style={{
@@ -120,7 +124,6 @@ export default function TrafficLightSimulation() {
             </div>
           </>
         )}
-
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
             <h3>Pending: {pending}</h3>
