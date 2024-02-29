@@ -12,11 +12,19 @@ function getRandomColor() {
   return colors[getRandomInt(0, colors.length - 1)];
 }
 
+function refreshPage() {
+  window.location.reload(false);
+}
+
 export default function TrafficLightSimulation() {
-  const [pending, setPending] = useState(getRandomInt(8, 10));
+  //const peopleToWalk = getRandomInt(10, 20);
+  const peopleToWalk = 12;
+  const initGroupWalking = getRandomInt(2, 6);
+
+  const [pending, setPending] = useState(peopleToWalk);
   const [walking, setWalking] = useState(0);
   const [completed, setCompleted] = useState(0);
-  const [groupWalking, setGroupWalking] = useState(getRandomInt(2, 3));
+  const [groupWalking, setGroupWalking] = useState(initGroupWalking);
   const [light, setLight] = useState(false);
 
   // setInterval function repeatedly calls a function or executes a code snippet,
@@ -33,12 +41,9 @@ export default function TrafficLightSimulation() {
     setLight(true); // Turn on the traffic light
     let walked = 0; // Initialize walked variable to count person walked
     let maxToWalk = 0;
-    let finish = false;
     const walkingInterval = setInterval(() => {
-      if (groupWalking >= pending) {
-        maxToWalk = pending;
-        finish = true;
-      } else maxToWalk = groupWalking;
+      if (groupWalking >= pending) maxToWalk = pending;
+      else maxToWalk = groupWalking;
       // Check if there are pending person and
       //if the maximum person limit hasn't been reached
       if (walked < maxToWalk) {
@@ -51,9 +56,7 @@ export default function TrafficLightSimulation() {
         setCompleted((c) => c + walked); // Add the walked count to the total completed
         setWalking(0); // Reset the walking count
         setLight(false); // Turn off the traffic light
-
-        if (finish) alert("finish");
-        else setGroupWalking(getRandomInt(2, 3));
+        setGroupWalking(initGroupWalking);
       }
     }, 1000); // Adjust the delay as needed (1 second interval)
   }
@@ -63,40 +66,61 @@ export default function TrafficLightSimulation() {
       <div style={{ textAlign: "center" }}>
         <h1>Traffic Light Crossing Simulation</h1>
         <p>Help pedestrians cross the street safely!</p>
-        <button
-          onClick={handleTrafficLightClick}
-          style={{
-            backgroundColor: light ? "green" : "red",
-            padding: "10px 24px",
-            borderRadius: "8px",
-            border: "none",
-            color: "white",
-            fontSize: "20px",
-            marginBottom: "20px",
-          }}
-        >
-          Traffic Light
-        </button>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",
-          }}
-        >
-          <h3>Group walking: {groupWalking} </h3>
-          {Array.from({ length: groupWalking }).map((_, index) => (
-            <div
-              key={index}
+
+        {completed === 12 ? (
+          <button
+            onClick={refreshPage}
+            style={{
+              backgroundColor: "black",
+              padding: "10px 24px",
+              borderRadius: "8px",
+              border: "none",
+              color: "white",
+              fontSize: "20px",
+              marginBottom: "20px",
+            }}
+          >
+            Play Again (refresh page)
+          </button>
+        ) : (
+          <>
+            <button
+              onClick={handleTrafficLightClick}
               style={{
-                backgroundColor: "blue",
-                width: "10px",
-                height: "10px",
-                margin: "2px",
+                backgroundColor: light ? "green" : "red",
+                padding: "10px 24px",
+                borderRadius: "8px",
+                border: "none",
+                color: "white",
+                fontSize: "20px",
+                marginBottom: "20px",
               }}
-            />
-          ))}
-        </div>
+            >
+              Traffic Light
+            </button>
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+              }}
+            >
+              <h3>Group walking: {groupWalking} </h3>
+              {Array.from({ length: groupWalking }).map((_, index) => (
+                <div
+                  key={index}
+                  style={{
+                    backgroundColor: "blue",
+                    width: "10px",
+                    height: "10px",
+                    margin: "2px",
+                  }}
+                />
+              ))}
+            </div>
+          </>
+        )}
 
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <div>
