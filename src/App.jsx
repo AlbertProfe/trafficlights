@@ -1,34 +1,37 @@
 import { useState } from "react";
 
 export default function RequestTracker() {
-  const [pending, setPending] = useState(100);
-  const [walking, setWalking] = useState(0);
-  const [completed, setCompleted] = useState(0);
-  const [light, setLight] = useState(false);
-
-  /*
-  useEffect(() => {
-    console.log("pending effect:", pending);
-  }, [pending]);
-  */
+  const [crossing, setCrossing] = useState({
+    pending: 100,
+    walking: 0,
+    completed: 0,
+    light: false,
+  });
 
   function handleTrafficLightClick() {
-    //console.log("before", pending);
-    setPending((p) => p - 10);
-    //console.log("after", pending);
-    setWalking((w) => w + 10);
-    setLight(true); // Set light to green when walking starts
+    setCrossing((prevState) => ({
+      ...prevState,
+      pending: prevState.pending - 10,
+      walking: prevState.walking + 10,
+      light: true,
+    }));
+
     setTimeout(() => {
-      setWalking((w) => w - 10);
-      setCompleted((c) => c + 10);
-      setLight(false); // Set light to red when walking is completed
-    }, 5000); // Delay for 3000 milliseconds (5 seconds)
+      setCrossing((prevState) => ({
+        ...prevState,
+        walking: prevState.walking - 10,
+        completed: prevState.completed + 10,
+        light: false,
+      }));
+    }, 5000);
   }
+
+  const { pending, walking, completed, light } = crossing;
 
   return (
     <>
       <h3 style={{ color: light ? "grey" : "white" }}> Pending: {pending} </h3>
-      <h3 style={{ color: light ? "white" : "grey" }}>
+      <h3 style={{ color: light ? "white" : "red" }}>
         Walking: {walking} {light ? " . . . . ." : ""}
       </h3>
       <h3 style={{ color: light ? "green" : "grey" }}>
@@ -45,9 +48,8 @@ export default function RequestTracker() {
           fontSize: "20px",
         }}
       >
-        Taffic Light
+        Traffic Light
       </button>
     </>
   );
 }
-
