@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import React, { useState } from "react";
 
 // Generate a random integer within the specified range,
 //inclusive of both minimum and maximum values.
@@ -13,9 +13,10 @@ function getRandomColor() {
 }
 
 export default function TrafficLightSimulation() {
-  const [pending, setPending] = useState(getRandomInt(8, 15));
+  const [pending, setPending] = useState(getRandomInt(8, 10));
   const [walking, setWalking] = useState(0);
   const [completed, setCompleted] = useState(0);
+  const [groupWalking, setGroupWalking] = useState(getRandomInt(2, 3));
   const [light, setLight] = useState(false);
 
   // setInterval function repeatedly calls a function or executes a code snippet,
@@ -30,13 +31,17 @@ export default function TrafficLightSimulation() {
   // preventing further executions of the specified function.
   function handleTrafficLightClick() {
     setLight(true); // Turn on the traffic light
-
-    let walked = 0; // Initialize walked variable to count persons walking
-
+    let walked = 0; // Initialize walked variable to count person walked
+    let maxToWalk = 0;
+    let finish = false;
     const walkingInterval = setInterval(() => {
-      // Check if there are pending steps and
-      //if the maximum steps limit hasn't been reached
-      if (pending > 0 && walked < 6) {
+      if (groupWalking >= pending) {
+        maxToWalk = pending;
+        finish = true;
+      } else maxToWalk = groupWalking;
+      // Check if there are pending person and
+      //if the maximum person limit hasn't been reached
+      if (walked < maxToWalk) {
         // Increment/decrement  the walking, pending and walked variables
         setWalking((w) => w + 1);
         setPending((p) => p - 1);
@@ -46,46 +51,41 @@ export default function TrafficLightSimulation() {
         setCompleted((c) => c + walked); // Add the walked count to the total completed
         setWalking(0); // Reset the walking count
         setLight(false); // Turn off the traffic light
+
+        if (finish) alert("finish");
+        else setGroupWalking(getRandomInt(2, 3));
       }
     }, 1000); // Adjust the delay as needed (1 second interval)
   }
 
   return (
-    <div style={{ textAlign: "center" }}>
-      <h1>Traffic Light Crossing Simulation</h1>
-      <p>Help pedestrians cross the street safely!</p>
-      <button
-        onClick={handleTrafficLightClick}
-        style={{
-          backgroundColor: light ? "green" : "red",
-          padding: "10px 24px",
-          borderRadius: "8px",
-          border: "none",
-          color: "white",
-          fontSize: "20px",
-          marginBottom: "20px",
-        }}
-      >
-        Traffic Light
-      </button>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <div>
-          <h3>Pending: {pending}</h3>
-          {Array.from({ length: pending }).map((_, index) => (
-            <div
-              key={index}
-              style={{
-                backgroundColor: getRandomColor(),
-                width: "10px",
-                height: "10px",
-                margin: "2px",
-              }}
-            />
-          ))}
-        </div>
-        <div>
-          <h3>Walking: {walking}</h3>
-          {Array.from({ length: walking }).map((_, index) => (
+    <>
+      <div style={{ textAlign: "center" }}>
+        <h1>Traffic Light Crossing Simulation</h1>
+        <p>Help pedestrians cross the street safely!</p>
+        <button
+          onClick={handleTrafficLightClick}
+          style={{
+            backgroundColor: light ? "green" : "red",
+            padding: "10px 24px",
+            borderRadius: "8px",
+            border: "none",
+            color: "white",
+            fontSize: "20px",
+            marginBottom: "20px",
+          }}
+        >
+          Traffic Light
+        </button>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+          }}
+        >
+          <h3>Group walking: {groupWalking} </h3>
+          {Array.from({ length: groupWalking }).map((_, index) => (
             <div
               key={index}
               style={{
@@ -97,21 +97,52 @@ export default function TrafficLightSimulation() {
             />
           ))}
         </div>
-        <div>
-          <h3>Completed: {completed}</h3>
-          {Array.from({ length: completed }).map((_, index) => (
-            <div
-              key={index}
-              style={{
-                backgroundColor: "green",
-                width: "10px",
-                height: "10px",
-                margin: "2px",
-              }}
-            />
-          ))}
+
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div>
+            <h3>Pending: {pending}</h3>
+            {Array.from({ length: pending }).map((_, index) => (
+              <div
+                key={index}
+                style={{
+                  backgroundColor: getRandomColor(),
+                  width: "10px",
+                  height: "10px",
+                  margin: "2px",
+                }}
+              />
+            ))}
+          </div>
+          <div>
+            <h3>Walking: {walking}</h3>
+            {Array.from({ length: walking }).map((_, index) => (
+              <div
+                key={index}
+                style={{
+                  backgroundColor: "blue",
+                  width: "10px",
+                  height: "10px",
+                  margin: "2px",
+                }}
+              />
+            ))}
+          </div>
+          <div>
+            <h3>Completed: {completed}</h3>
+            {Array.from({ length: completed }).map((_, index) => (
+              <div
+                key={index}
+                style={{
+                  backgroundColor: "green",
+                  width: "10px",
+                  height: "10px",
+                  margin: "2px",
+                }}
+              />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
