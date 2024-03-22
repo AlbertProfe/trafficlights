@@ -12,7 +12,7 @@ export default function Layout () {
         </div>
         <div >
           <Link to="/simulation">Simulation</Link>
-          
+          <br/>
           <Link to="/mysimulations">MySimulations</Link>
           <br />
           <br />
