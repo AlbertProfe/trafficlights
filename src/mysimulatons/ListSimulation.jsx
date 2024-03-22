@@ -1,18 +1,17 @@
-import UpdateSimulation from "./UpdateSimulation"
-import ActionSimulation from "./ActionsSimulation";
+import EditSimulation from "./EditSimulation";
+import DeleteSimulation from "./DeleteSimulation";
+import { useContext } from "react";
+import { SimulationsContext } from "../middleware/DataSimulations";
+
 
 // Sub-component for listing simulations
-const ListSimulations = ({
-  simulations,
-  isLoading,
-  handleEditSelectId,
-  deleteSimulation,
-  handleEditChange,
-  handleUpdate,
-  setEditingSimulationId,
-  editingSimulationId,
-  editingSimulationData,
-}) => (
+const ListSimulations = () => {
+
+  const {simulations,isLoading} = useContext(SimulationsContext);
+
+
+
+return (
   <>
     <h2 style={{ textAlign: "center" }}>
       Simulations list ({simulations.length})
@@ -28,23 +27,11 @@ const ListSimulations = ({
               id: {simulation.id} <br />
               Created: {simulation.createdAt} <br />
               Time: {simulation.time} <br />
-              {editingSimulationId === simulation.id ? (
-                <UpdateSimulation
-                  simulation={simulation}
-                  handleEditChange={handleEditChange}
-                  handleUpdate={handleUpdate}
-                  setEditingSimulationId={setEditingSimulationId}
-                  editingSimulationData={editingSimulationData}
-                />
-              ) : (
                 <>
-                  <ActionSimulation
-                    simulationId={simulation.id}
-                    deleteSimulation={deleteSimulation}
-                    handleEditSelectId={handleEditSelectId}
-                  />
+                  <EditSimulation simulationId={simulation.id} />
+                  <DeleteSimulation simulationId={simulation.id} />
                 </>
-              )}
+            
               <br />
             </li>
           </div>
@@ -54,6 +41,6 @@ const ListSimulations = ({
   </>
 );
 
-
+              };
 export default ListSimulations;
 

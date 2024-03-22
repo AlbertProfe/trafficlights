@@ -1,10 +1,34 @@
+import { SimulationsContext } from ".././middleware/DataSimulations";
+import { useContext, useState } from "react";
 
 
-const CreateSimulation = ({
-  newSimulationData,
-  handleAddChange,
-  handleCreate,
-}) => (
+const CreateSimulation = () => {
+  const {addSimulation} = useContext(SimulationsContext);
+  const [newSimulationData, setNewSimulationData] = useState({
+    user: "",
+    createdAt: new Date().toString(),
+    time: "",
+  });
+
+    const handleAddChange = (e) => {
+      const { name, value } = e.target;
+      setNewSimulationData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    };
+
+      const handleCreate = () => {
+        addSimulation(newSimulationData);
+        setNewSimulationData({
+          user: "",
+          createdAt: new Date().toString(),
+          time: "",
+        });
+      };
+
+
+  return (
   <>
     <h2 style={{ textAlign: "center" }}>Add Simulation</h2>
     <div className="simulation">
@@ -40,5 +64,6 @@ const CreateSimulation = ({
     </div>
   </>
 );
+};
 
 export default CreateSimulation;
